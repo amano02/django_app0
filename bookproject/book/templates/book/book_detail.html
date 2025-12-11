@@ -9,8 +9,10 @@
           <p class="card-text">{{object.text}}</p>
           <a href="{% url 'update-book' object.pk %}" class="btn btn-primary">編集する</a>
           <a href="{% url 'delete-book' object.pk %}" class="btn btn-primary">削除する</a>
+          <a href="{% url 'review' object.pk %}" class="btn btn-primary">レビューする</a>
           <h6 class="card-title">{{object.category}}</h6>
         </div>
         <a href="{% url 'list-book' %}" class="btn btn-primary">一覧へ</a>
+
       </div>
 {% endblock content %}

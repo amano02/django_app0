@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AnyWork - 案件管理</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gray-50 text-gray-800 font-sans">
+
+    <!-- Header -->
+    <header class="bg-white shadow-sm sticky top-0 z-10">
+        <div class="max-w-4xl mx-auto px-4 py-3 flex justify-between items-center">
+            <h1 class="text-xl font-bold text-indigo-600 flex items-center gap-2">
+                <i data-lucide="file-text" class="w-6 h-6"></i>
+                AnyWork
+            </h1>
+            <div class="text-xs text-gray-500">Ver 1.0 (Design Preview)</div>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 py-6 pb-24">
+        
+        <!-- Filters Area -->
+        <div class="mb-6 space-y-4 bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+            
+            <!-- Search Bar -->
+            <div class="relative">
+                <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5"></i>
+                <input
+                    type="text"
+                    id="searchInput"
+                    placeholder="案件名・クライアント名で検索..."
+                    class="w-full pl-10 pr-4 py-2.5 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-gray-50 focus:bg-white transition-all"
+                >
+            </div>
+            
+            <div class="space-y-3">
+                <!-- Category Filter (Mock) -->
+                <div class="flex items-center gap-3 overflow-x-auto no-scrollbar">
+                    <span class="text-xs font-bold text-gray-400 whitespace-nowrap flex items-center gap-1">
+                        <i data-lucide="tag" size="12"></i>
+                        カテゴリ
+                    </span>
+                    <div class="flex gap-2" id="categoryFilters">
+                        <button data-filter="all" class="filter-btn-cat active px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-colors border bg-gray-800 text-white border-gray-800">
+                            すべて
+                        </button>
+                        <button data-filter="1" class="filter-btn-cat px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-colors border bg-white text-gray-600 border-gray-200 hover:bg-gray-50">
+                            イラスト
+                        </button>
+                        <button data-filter="2" class="filter-btn-cat px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-colors border bg-white text-gray-600 border-gray-200 hover:bg-gray-50">
+                            Web制作
+                        </button>
+                        <button data-filter="3" class="filter-btn-cat px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-colors border bg-white text-gray-600 border-gray-200 hover:bg-gray-50">
+                            動画編集
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Status Filter (Mock) -->
+                <div class="flex items-center gap-3 overflow-x-auto no-scrollbar pt-1 border-t border-dashed border-gray-100">
+                    <span class="text-xs font-bold text-gray-400 whitespace-nowrap flex items-center gap-1">
+                        <i data-lucide="filter" size="12"></i>
+                        状況
+                    </span>
+                    <div class="flex gap-2" id="statusFilters">
+                        <button data-filter="all" class="filter-btn-status active px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-colors border bg-gray-800 text-white border-gray-800">
+                            全ステータス
+                        </button>
+                        <button data-filter="not_started" class="filter-btn-status px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all border bg-white border-gray-200 text-gray-500 hover:bg-gray-50">
+                            未着手
+                        </button>
+                        <button data-filter="in_progress" class="filter-btn-status px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all border bg-white border-gray-200 text-gray-500 hover:bg-gray-50">
+                            進行中
+                        </button>
+                         <button data-filter="completed" class="filter-btn-status px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all border bg-white border-gray-200 text-gray-500 hover:bg-gray-50">
+                            完了
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Project List (Static Mock Data) -->
+        <div id="projectGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            
+            <!-- Mock Item 1 -->
+            <div 
+                class="project-card bg-white rounded-xl shadow-sm border border-gray-100 p-4 active:scale-[0.98] transition-transform cursor-pointer hover:shadow-md"
+                data-title="春のキャンペーン用LPデザイン"
+                data-client="株式会社アルファ"
+                data-category-id="2"
+                data-status-key="in_progress"
+                onclick="toggleModal(true)"
+            >
+                <div class="flex justify-between items-start mb-2">
+                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-600">
+                        <i data-lucide="clock" class="w-3 h-3"></i> 進行中
+                    </span>
+                    <span class="text-xs text-gray-400 bg-gray-50 px-2 py-1 rounded border border-gray-100">
+                        Web制作
+                    </span>
+                </div>
+                <h3 class="font-bold text-gray-900 mb-1 line-clamp-2 leading-snug">
+                    春のキャンペーン用LPデザイン
+                </h3>
+                <div class="flex items-center gap-1 text-sm text-gray-600 mb-3">
+                    <i data-lucide="user" class="w-4 h-4 text-gray-400"></i>
+                    <span class="truncate">株式会社アルファ</span>
+                </div>
+                <div class="flex items-center justify-between pt-3 border-t border-gray-100 mt-auto">
+                    <div class="flex items-center gap-1 text-sm font-medium text-gray-500">
+                        <i data-lucide="calendar" class="w-4 h-4"></i>
+                        2024-04-15
+                    </div>
+                    <div class="font-bold text-gray-900">
+                        ¥150,000
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mock Item 2 -->
+            <div 
+                class="project-card bg-white rounded-xl shadow-sm border border-gray-100 p-4 active:scale-[0.98] transition-transform cursor-pointer hover:shadow-md"
+                data-title="SNS用アイコンイラスト制作"
+                data-client="個人（佐藤様）"
+                data-category-id="1"
+                data-status-key="checking"
+                onclick="toggleModal(true)"
+            >
+                <div class="flex justify-between items-start mb-2">
+                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-orange-100 text-orange-600">
+                        <i data-lucide="alert-circle" class="w-3 h-3"></i> 確認中
+                    </span>
+                    <span class="text-xs text-gray-400 bg-gray-50 px-2 py-1 rounded border border-gray-100">
+                        イラスト
+                    </span>
+                </div>
+                <h3 class="font-bold text-gray-900 mb-1 line-clamp-2 leading-snug">
+                    SNS用アイコンイラスト制作
+                </h3>
+                <div class="flex items-center gap-1 text-sm text-gray-600 mb-3">
+                    <i data-lucide="user" class="w-4 h-4 text-gray-400"></i>
+                    <span class="truncate">個人（佐藤様）</span>
+                </div>
+                <div class="flex items-center justify-between pt-3 border-t border-gray-100 mt-auto">
+                    <div class="flex items-center gap-1 text-sm font-medium text-gray-500">
+                        <i data-lucide="calendar" class="w-4 h-4"></i>
+                        2024-03-30
+                    </div>
+                    <div class="font-bold text-gray-900">
+                        ¥30,000
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mock Item 3 -->
+            <div 
+                class="project-card bg-white rounded-xl shadow-sm border border-gray-100 p-4 active:scale-[0.98] transition-transform cursor-pointer hover:shadow-md"
+                data-title="企業ロゴリニューアル"
+                data-client="株式会社アルファ"
+                data-category-id="1"
+                data-status-key="completed"
+                onclick="toggleModal(true)"
+            >
+                <div class="flex justify-between items-start mb-2">
+                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-600">
+                        <i data-lucide="check-circle" class="w-3 h-3"></i> 完了
+                    </span>
+                    <span class="text-xs text-gray-400 bg-gray-50 px-2 py-1 rounded border border-gray-100">
+                        イラスト
+                    </span>
+                </div>
+                <h3 class="font-bold text-gray-900 mb-1 line-clamp-2 leading-snug">
+                    企業ロゴリニューアル
+                </h3>
+                <div class="flex items-center gap-1 text-sm text-gray-600 mb-3">
+                    <i data-lucide="user" class="w-4 h-4 text-gray-400"></i>
+                    <span class="truncate">株式会社アルファ</span>
+                </div>
+                <div class="flex items-center justify-between pt-3 border-t border-gray-100 mt-auto">
+                    <div class="flex items-center gap-1 text-sm font-medium text-gray-500">
+                        <i data-lucide="calendar" class="w-4 h-4"></i>
+                        2024-03-20
+                    </div>
+                    <div class="font-bold text-gray-900">
+                        ¥80,000
+                    </div>
+                </div>
+            </div>
+
+            <!-- Empty State -->
+            <div id="noResults" class="hidden col-span-full flex flex-col items-center justify-center py-12 text-gray-400 space-y-3">
+                <i data-lucide="search" class="w-12 h-12 text-gray-200"></i>
+                <p>条件に一致する案件は見つかりませんでした</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- FAB -->
+    <button
+        onclick="toggleModal(true)"
+        class="fixed bottom-6 right-6 bg-indigo-600 hover:bg-indigo-700 text-white w-14 h-14 rounded-full shadow-lg flex items-center justify-center transition-all active:scale-90 z-20"
+        aria-label="案件追加"
+    >
+        <i data-lucide="plus" class="w-8 h-8"></i>
+    </button>
+
+    <!-- Modal (Form Mock) -->
+    <div id="projectModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" onclick="toggleModal(false)"></div>
+        <div class="bg-white rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto shadow-xl relative z-10 animate-in fade-in zoom-in duration-200">
+            
+            <form onsubmit="event.preventDefault(); toggleModal(false); alert('これはデザイン確認用です。実際の保存はDjango環境で行われます。');">
+                <div class="sticky top-0 bg-white border-b px-6 py-4 flex justify-between items-center">
+                    <h2 class="text-lg font-bold">案件情報入力</h2>
+                    <button type="button" onclick="toggleModal(false)" class="p-2 hover:bg-gray-100 rounded-full" title="閉じる">
+                        <i data-lucide="x" class="w-5 h-5"></i>
+                    </button>
+                </div>
+
+                <div class="p-6 space-y-6">
+                    <div class="space-y-1">
+                        <label class="text-sm font-semibold text-gray-700">案件名 <span class="text-red-500">*</span></label>
+                        <input type="text" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500" placeholder="例: 春のキャンペーンバナー">
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="space-y-1">
+                            <label class="text-sm font-semibold text-gray-700">ステータス</label>
+                            <label for="statusSelect" class="sr-only">ステータス</label>
+                            <select id="statusSelect" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500">
+                                <option>未着手</option>
+                                <option>進行中</option>
+                                <option>完了</option>
+                            </select>
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-sm font-semibold text-gray-700">カテゴリ</label>
+                            <label for="categorySelect" class="sr-only">カテゴリ</label>
+                            <select id="categorySelect" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500">
+                                <option>イラスト</option>
+                                <option>Web制作</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="space-y-1">
+                        <label class="text-sm font-semibold text-gray-700">クライアント</label>
+                        <select title="クライアントを選択してください" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500">
+                            <option>株式会社アルファ</option>
+                            <option>合同会社ベータ</option>
+                        </select>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="space-y-1">
+                            <label class="text-sm font-semibold text-gray-700">報酬額</label>
+                            <div class="relative">
+                                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">¥</span>
+                                <input type="number" title="報酬額を入力してください" placeholder="例: 100000" class="w-full pl-8 pr-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500">
+                            </div>
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-sm font-semibold text-gray-700">納期</label>
+                            <input type="date" title="納期を選択してください" placeholder="例: 2024-03-20" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500">
+                        </div>
+                    </div>
+
+                    <div class="space-y-1">
+                        <label class="text-sm font-semibold text-gray-700">メモ</label>
+                        <textarea rows="4" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500" placeholder="進捗状況や特記事項..."></textarea>
+                    </div>
+                </div>
+
+                <div class="sticky bottom-0 bg-white border-t px-6 py-4 flex gap-3">
+                    <div class="flex-1"></div>
+                    <button
+                        type="button"
+                        onclick="toggleModal(false)"
+                        class="px-5 py-2 rounded-lg text-gray-600 font-medium hover:bg-gray-100 transition-colors"
+                    >
+                        キャンセル
+                    </button>
+                    <button
+                        type="submit"
+                        class="px-6 py-2 rounded-lg bg-indigo-600 text-white font-bold hover:bg-indigo-700 shadow-sm transition-colors"
+                    >
+                        保存する (Mock)
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        function toggleModal(show) {
+            const modal = document.getElementById('projectModal');
+            if (show) {
+                modal.classList.remove('hidden');
+            } else {
+                modal.classList.add('hidden');
+            }
+        }
+
+        const searchInput = document.getElementById('searchInput');
+        const categoryBtns = document.querySelectorAll('.filter-btn-cat');
+        const statusBtns = document.querySelectorAll('.filter-btn-status');
+        const cards = document.querySelectorAll('.project-card');
+        const noResults = document.getElementById('noResults');
+
+        let currentSearch = '';
+        let currentCat = 'all';
+        let currentStatus = 'all';
+
+        function filterProjects() {
+            let visibleCount = 0;
+
+            cards.forEach(card => {
+                const title = card.dataset.title.toLowerCase();
+                const client = card.dataset.client.toLowerCase();
+                const catId = card.dataset.categoryId;
+                const statusKey = card.dataset.statusKey;
+
+                const matchSearch = title.includes(currentSearch) || client.includes(currentSearch);
+                const matchCat = currentCat === 'all' || currentCat === catId;
+                const matchStatus = currentStatus === 'all' || currentStatus === statusKey;
+
+                if (matchSearch && matchCat && matchStatus) {
+                    card.style.display = 'block';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            if (visibleCount === 0) {
+                noResults.classList.remove('hidden');
+            } else {
+                noResults.classList.add('hidden');
+            }
+        }
+
+        searchInput.addEventListener('input', (e) => {
+            currentSearch = e.target.value.toLowerCase();
+            filterProjects();
+        });
+
+        categoryBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                categoryBtns.forEach(b => {
+                    b.classList.remove('bg-indigo-600', 'text-white', 'border-indigo-600');
+                    b.classList.add('bg-white', 'text-gray-600', 'border-gray-200');
+                });
+                btn.classList.remove('bg-white', 'text-gray-600', 'border-gray-200');
+                btn.classList.add('bg-indigo-600', 'text-white', 'border-indigo-600');
+
+                currentCat = btn.dataset.filter;
+                filterProjects();
+            });
+        });
+
+        statusBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                 statusBtns.forEach(b => {
+                    b.classList.remove('bg-gray-800', 'text-white', 'border-gray-800', 'ring-1');
+                    b.classList.add('bg-white', 'text-gray-500', 'border-gray-200');
+                });
+                btn.classList.remove('bg-white', 'text-gray-500', 'border-gray-200');
+                btn.classList.add('bg-gray-800', 'text-white', 'border-gray-800');
+
+                currentStatus = btn.dataset.filter;
+                filterProjects();
+            });
+        });
+    </script>
+</body>
+</html>
